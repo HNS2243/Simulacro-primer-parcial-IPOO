@@ -1,15 +1,6 @@
 <?php
-/*
-En la clase Venta:
-1. Se registra la siguiente información: número, fecha, referencia al cliente, referencia a una colección de
-motos y el precio final.
-2. Método constructor que recibe como parámetros cada uno de los valores a ser asignados a cada
-atributo de la clase.
-3. Los métodos de acceso de cada uno de los atributos de la clase.
-4. Redefinir el método _toString para que retorne la información de los atributos de la clase.
 
-*/
-class venta {
+class Venta {
     private int      $numero;
     private DateTime $fecha;
     private cliente  $cliente;
@@ -81,13 +72,6 @@ public function __toString() {
            "Precio Final: $" . $this->precioFinal . "\n";
 }
 
-/* 5. Implementar el método incorporarMoto($objMoto) que recibe por parámetro un objeto moto y lo
-incorpora a la colección de motos de la venta, siempre y cuando sea posible la venta. El método cada
-vez que incorpora una moto a la venta, debe actualizar la variable instancia precio final de la venta.
-Utilizar el método que calcula el precio de venta de la moto donde crea necesario. */
-
-//Esto hay que verlo bien
-
 public function incorporarMoto($objMoto) {
     // Verifica si la moto está disponible para la venta
     $precioVenta = $objMoto->darPrecioVenta();
@@ -96,17 +80,16 @@ public function incorporarMoto($objMoto) {
         // Se puede vender porque si esta disponible, darPrecioVenta va a dar un precio, sino da -1 entonces agregamos la moto
         $this->motos[] = $objMoto;
 
-        // Sumamos el precio de la moto al precio final de la venta
-        $this->precioFinal += $precioVenta;
+        // Sumamos el precio de la moto al precio final de la venta. Tiene que ser con set
+       // $this->precioFinal += $precioVenta; Eso esta mal
+       $temPrecio = $this->getPrecioFinal() + $precioVenta;
+       $this->setPrecioFinal($tempPrecio);
         $incorporacion = "Exitosa" ;
         return $incorporacion; // incorporación exitosa
     } else {
-        $incorporacion = "No podible" ;
+        $incorporacion = "No posible" ;
         return $incorporacion; // no se puede incorporar
     }  //Los retornos son para una formalidad creo
 }
-
-
-
-
 }
+?>

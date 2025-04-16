@@ -1,13 +1,14 @@
 <?php
 
-class empresa {
+class Empresa {
 
     private string $denominacion;
     private string $direccion;
     private array  $clientes;
     private array  $motos;
     private array  $ventas;
-    private int    $contadorVentas;
+    private int    $contadorVentas = 0;
+    private array  $coleccionVentas;
 
 public function __construct($denomination, $address, $custumers, $motorcycles, $sales){
     $this->denominacion = $denomination;
@@ -36,6 +37,10 @@ public function getMotos() {
 
 public function getVentas() {
     return $this->ventas;
+}
+
+private function getContadorVentas(){
+    return $this->contadorVentas;
 }
 
 //Metodos Set
@@ -74,49 +79,72 @@ public function __toString() {
 colección de motos de la Empresa y
 retorna la referencia al objeto moto cuyo código coincide con el
  recibido por parámetro. */
-public function retornarMoto($codigoMoto){
-    foreach ($this->motos as $bikes){
-        if($bikes->getCodigo() == $codigoMoto){
-            return $bikes;
+public function retornarMoto($codigoMoto){ 
+    $motocicleta = null;
+    $i = 0;
+
+    $colMotosTemp = $this->getMotos();
+
+    while($i < count($colMotosTemp) && $motocicleta === null){
+        if($colMotosTemp[$i]->getCodigo() === $codigoMoto){
+             $motocicleta =$colMotosTemp[$i];
+        } else { 
+            $i++;
         }
-        return null; // para asegurar que no hay retorno.. no se, capaz lo saque.
-    }
-} 
- 
-/* Implementar el método registrarVenta($colCodigosMoto, $objCliente) método que recibe por
-parámetro una colección de códigos de motos, la cual es recorrida, y por cada elemento de la colección
-se busca el objeto moto correspondiente al código y se incorpora a la colección de motos de la instancia
-Venta que debe ser creada. Recordar que no todos los clientes ni todas las motos, están disponibles
-para registrar una venta en un momento determinado.
-El método debe setear los variables instancias de venta que corresponda y retornar el importe final de la
-venta. */
+    } 
+    return $motocicleta;
+}
+
 public function registrarVenta($colCodigosMoto, $objCliente){
-    //asi, busca insdiscriminadamete y agrega
+    
+   
     //primero, ver si el cliente esta activo
     if ($objCliente->getEstado()) {
-        $fechaActual = new DateTime();
-    foreach ($colCodigoMoto as $code){
-        foreach ($this->motos as $bike){
-            if ($bike->getCodigo() == $code && $bike->getEstadoM()) {
-                $bikes[] = $bike; 
-                $this->contadorVentas++; 
-                foreach ($bikes as $precioU){
-                    $preciosJ[] = $precioU->darPrecioVenta();
-                    $precioF = array_sum($preciosJ);
-                }
-            }
+        $fechaActual = new DateTime(); //toma fecha del momento
+
+    foreach ($colCodigosMoto as $code){  //recorre todo el el array coleccion de motos y saca cada codigo que tiene
+        $moto = $this->retornarMoto($code);
+
+        if ($moto !== null && $moto->getEstadoM()) {
+            $bikes[] = $moto;
+            $preciosJ[] = $moto->darPrecioVenta();
         }
     }
-    return $venta = new venta ($this->contadorVentas, $fechaActual, $objCliente, $bikes, $precioF ) ;
-    //por el momento esta sin testear, creo que es asi, por lo menos entiendo la logica.
-   }
-}
 
-/* Implementar el método retornarVentasXCliente($tipo,$numDoc) que recibe por parámetro el tipo y
-número de documento de un Cliente y retorna una colección con las ventas realizadas al cliente. */
+    if (!empty($bikes)) {
+        $this->contadorVentas++;
+        $precioF = array_sum($preciosJ);
+        $numVentas = $this->getContadorVentas();
+        $venta = new Venta($numVentas, $fechaActual, $objCliente, $bikes, $precioF);
+        $this->coleccionVentas[] = $venta;
+        return $venta;
+    }
+} else {
+return null; // No se registró ninguna venta
+}
+}
 
 public function retornarVentasXCliente($tipo,$numDoc){
- //No tengo idea cuando se suponia que tenia que guardar que se hace una venta...     
-}
 
+$cliente = null;
+$i = 0;
+$sales = [];
+while($i < count($this->clientes) && $cliente === null){
+    if($this->clientes[$i]->getDocumento() == $numDoc && $this->clientes[$i]->getTipoDoc() === $tipo ){
+        $cliente = $this->clientes[$i];
+    } else { 
+        $i++;
+    }
 }
+if ($cliente == null){
+    return null;
+} 
+foreach ($this->coleccionVentas as $venta) {
+    if($venta->getCliente() === $cliente){
+        $sales[] = $venta;
+    }
+}
+return empty($sales) ? null : $sales;
+    }
+}
+?>

@@ -1,0 +1,3 @@
+Alumno:      Herman Nicolas Sandoval
+Legajo:	     FAI-5639
+Repositorio: https://github.com/HNS2243/Simulacro-primer-parcial-IPOO

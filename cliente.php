@@ -1,6 +1,6 @@
 <?php
 // Mejor un archivo por clase
-class cliente {
+class Cliente {
     /*Se asume que todos los datos ingresados dados con suma prudencia y siempre son exactos*/
     private string  $nombre;
     private string  $apellido;
@@ -9,12 +9,12 @@ class cliente {
     private string  $tipoDoc;
 
     // Constructor
-    public function __construct(string $name, string $surname, string $state, int $document, string $tipeDoc) {
+    public function __construct(string $name, string $surname, bool $state, int $document, string $tipeDoc) {
         $this->nombre    = $name;
         $this->apellido  = $surname;
         $this->estado    = $state;
         $this->documento = $document;
-        $this->$tipoDoc  = $tipeDoc;
+        $this->tipoDoc  = $tipeDoc;
     }
 
     // Métodos getter
@@ -43,7 +43,7 @@ class cliente {
         return "Nombre: " . $this->nombre . " " . $this->apellido . 
                ", Documento: " . $this->tipoDoc . 
                ", Número: " . $this->documento . 
-               ", Estado de cuenta: " . $this->estado;
+               ", Estado de cuenta: " . ($this->estado ? "Activo" : "Inactivo");
     }
 
     public function setNombre(string $nombre): void {
@@ -66,3 +66,4 @@ class cliente {
         $this->tipoDoc = $tipoDoc;
     }
 }
+?>
